@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>pefinite - not defined - not finite - but probably it will be defined or finite</title>
+    <link rel='shortcut icon' href='favicon.ico' type='image/x-icon' />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+    <script src="https://pefinite.com/pefiniteJS.js"></script>
+    <link href="https://pefinite.com/style.css"  rel="stylesheet"/>
+    <link href="https://pefinite.com/pefiniteUI.css" rel="stylesheet">
+    </head>
+<body>
+
+
+
+<div class='content_wrapper'>
+    <div class='container-fluid' style='width: 100%; height: 100%;'>
+        <div class='row'>
+            <div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
+                <h1 class='logos' id='logos'>
+                    <span class='do_log'>sawaal</span>
+                    <span class='do_log'>piracy</span>
+                    <span class='do_log'>.</span>
+                </h1>
+            </div>
+        </div>
+    </div><br><br>
+    <h1 id="counter"></h1>
+</div>
+
+<script>
+    function castAllDirectories() {
+        let allDirectories = [
+			"https://www.sawaal.com/?sort=latest",
+			"https://www.sawaal.com/aptitude-reasoning-questions-and-answers.html?sort=latest",
+			"https://www.sawaal.com/general-knowledge-questions-and-answers.html?sort=latest",
+			"https://www.sawaal.com/puzzles.html?sort=latest",
+			"https://www.sawaal.com/interview-questions-and-answers.html?sort=latest",
+			"https://www.sawaal.com/technical-questions-and-answers.html?sort=latest",
+			"https://www.sawaal.com/certifications-questions-and-answers.html?sort=latest",
+			"https://www.sawaal.com/exam-preparation-question-and-answers.html?sort=latest",
+			"https://www.sawaal.com/job-roles-question-and-answers.html?sort=latest",
+			"https://www.sawaal.com/true-or-false-questions-and-answers.html?sort=latest"
+        ];
+        for(let x = 0;  x < allDirectories.length; x++) {
+            readAllPagesOfADirectory(allDirectories[x]);
+        }
+    }
+
+    function readAllPagesOfADirectory(page) {
+        let nextUrl = "";
+        pefinite.ajax("http://localhost/sawaal_piracy/read_url_data.php", page).syncPost(function (data){
+            data = (new DOMParser()).parseFromString(data, "text/html");
+
+            // cast all post
+            let allPost = data.getElementsByClassName("post");
+            let allValidPost = [];
+            for(let x = 0; x < allPost.length; x++) {
+                if(allPost[x].getElementsByClassName("question_and_options_space5").length) {
+                    allValidPost.push(allPost[x]);
+                }
+            }
+
+            // extract all post information
+            for(let x= 0; x < allValidPost.length; x++) {
+                extractPostInformation(allValidPost[x]);
+            }
+
+            // find next page
+
+            let pagination = data.getElementById("pagination");
+            if(pagination) {
+                pagination = pagination.getElementsByClassName("next");
+                if(pagination.length) {
+                    nextUrl = pagination[0].href;
+                }
+            }
+        });
+        if(nextUrl.length) {
+            readAllPagesOfADirectory(nextUrl);
+        }
+    }
+
+    function extractPostInformation(post) {
+
+        // question name
+
+        let questionName = post.getElementsByClassName("question_and_options_space5")[0];
+
+        // casting label
+        let questionLabel = "";
+        questionLabel += btoa(unescape(encodeURIComponent(questionName.innerHTML.toString().trim()))).substring(0, 1999);
+
+
+        let questionImages = questionName.getElementsByTagName("img");
+        for(let x= 0; x < questionImages.length; x++) {
+            pefinite.ajax("http://localhost/sawaal_piracy/read_image_from_url.php", questionImages[x].src).syncPost(function (imageData){
+                imageData = JSON.parse(imageData);
+                if(imageData['data'].length) {
+                    questionImages[x].src = "data:image/" + imageData['type'] + ";base64, " + imageData['data'];
+                    questionImages[x].setAttribute("class", "img-responsive");
+                    questionImages[x].setAttribute("class", "question_image");
+                } else {
+                    questionImages[x].src = "";
+                    questionImages[x].alt = "";
+                    questionImages[x].setAttribute("class", "img-responsive");
+                    questionImages[x].setAttribute("class", "question_image");
+                }
+            });
+        }
+
+        questionName = questionName.innerHTML.toString().trim();
+
+        // question tag
+        let tags = post.getElementsByClassName("question_and_options_space5")[1];
+        tags = tags.getElementsByTagName("a");
+        let allTagName = [];
+        for(let x = 0; x < tags.length; x++) {
+           let eachTag = tags[x].innerHTML;
+           eachTag = eachTag.split("-");
+           for(let y = 0; y < eachTag.length; y++) {
+               let refinedTag = eachTag[y].trim();
+               if(refinedTag.length) {
+                   allTagName.push(refinedTag);
+               }
+           }
+        }
+
+        tags = allTagName.toString();
+
+        // question answers
+
+        let allOptions = [];
+
+        let questionOptions = post.getElementsByClassName("multiple_ch_que_layout");
+        if(questionOptions.length) {
+            questionOptions = questionOptions[0].textContent.split("\n");
+            for(let x = 0; x < questionOptions.length; x++) {
+                let findingEachAnswer = questionOptions[x].trim();
+                if(findingEachAnswer.length) {
+                    allOptions.push(findingEachAnswer.substring(2).trim());
+                }
+            }
+        }
+
+        // extract answer and explanation
+
+        let answerExplanation = post.getElementsByClassName("ansDivBox");
+        for(let x = 0; x < answerExplanation.length; x++) {
+            let id = answerExplanation[x].id;
+            if(id.includes("answer")) {
+                answerExplanation = answerExplanation[x];
+                break;
+            }
+        }
+
+        // extracting answer
+
+        let detailsImages = answerExplanation.getElementsByTagName("img");
+        for(let x= 0; x < detailsImages.length; x++) {
+            pefinite.ajax("http://localhost/sawaal_piracy/read_image_from_url.php", detailsImages[x].src).syncPost(function (imageData){
+                imageData = JSON.parse(imageData);
+                if(imageData['data'].length) {
+                    detailsImages[x].src = "data:image/" + imageData['type'] + ";base64, " + imageData['data'];
+                    detailsImages[x].setAttribute("class", "img-responsive");
+                    detailsImages[x].setAttribute("class", "question_image");
+                } else {
+                    detailsImages[x].src = "";
+                    detailsImages[x].alt = "";
+                    detailsImages[x].setAttribute("class", "img-responsive");
+                    detailsImages[x].setAttribute("class", "question_image");
+                }
+            });
+        }
+
+        if(allOptions.length) {
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+            let rightAnswer = answerExplanation.firstChild.textContent.trim();
+            allOptions.push(rightAnswer.charAt(0));
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+			if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+			if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+        } else {
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+            if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+        }
+        answerExplanation = answerExplanation.innerHTML.toString().trim();
+
+
+        let allQuestionDetails =  {};
+        allQuestionDetails['questionLabel'] = questionLabel;
+        allQuestionDetails['questionTitle'] = questionName;
+        allQuestionDetails['options'] = allOptions;
+        allQuestionDetails['questionTags'] = tags;
+        allQuestionDetails['questionExplanation'] = answerExplanation;
+        pefinite.ajax("http://localhost/sawaal_piracy/post_all_question.php", JSON.stringify(allQuestionDetails)).syncPost();
+    }
+
+
+    pefinite.ready(function (){
+        setTimeout(castAllDirectories, 3000);
+    });
+
+
+</script>
+</body>
+</html>
