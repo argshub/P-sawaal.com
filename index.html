@@ -51,7 +51,7 @@
 
     function readAllPagesOfADirectory(page) {
         let nextUrl = "";
-        pefinite.ajax("http://localhost/sawaal_piracy/read_url_data.php", page).syncPost(function (data){
+        pefinite.ajax("http://localhost/p_sawaal/read_url_data.php", page).syncPost(function (data){
             data = (new DOMParser()).parseFromString(data, "text/html");
 
             // cast all post
@@ -79,6 +79,8 @@
             }
         });
         if(nextUrl.length) {
+            console.clear();
+            console.log(nextUrl);
             readAllPagesOfADirectory(nextUrl);
         }
     }
@@ -91,12 +93,12 @@
 
         // casting label
         let questionLabel = "";
-        questionLabel += btoa(unescape(encodeURIComponent(questionName.innerHTML.toString().trim()))).substring(0, 1999);
+        questionLabel += btoa(unescape(encodeURIComponent(questionName.innerHTML.toString().trim())));
 
 
         let questionImages = questionName.getElementsByTagName("img");
         for(let x= 0; x < questionImages.length; x++) {
-            pefinite.ajax("http://localhost/sawaal_piracy/read_image_from_url.php", questionImages[x].src).syncPost(function (imageData){
+            pefinite.ajax("http://localhost/p_sawaal/read_image_from_url.php", questionImages[x].src).syncPost(function (imageData){
                 imageData = JSON.parse(imageData);
                 if(imageData['data'].length) {
                     questionImages[x].src = "data:image/" + imageData['type'] + ";base64, " + imageData['data'];
@@ -105,6 +107,7 @@
                 } else {
                     questionImages[x].src = "";
                     questionImages[x].alt = "";
+                    questionImages[x].style.display = "none";
                     questionImages[x].setAttribute("class", "img-responsive");
                     questionImages[x].setAttribute("class", "question_image");
                 }
@@ -160,7 +163,7 @@
 
         let detailsImages = answerExplanation.getElementsByTagName("img");
         for(let x= 0; x < detailsImages.length; x++) {
-            pefinite.ajax("http://localhost/sawaal_piracy/read_image_from_url.php", detailsImages[x].src).syncPost(function (imageData){
+            pefinite.ajax("http://localhost/p_sawaal/read_image_from_url.php", detailsImages[x].src).syncPost(function (imageData){
                 imageData = JSON.parse(imageData);
                 if(imageData['data'].length) {
                     detailsImages[x].src = "data:image/" + imageData['type'] + ";base64, " + imageData['data'];
@@ -169,6 +172,7 @@
                 } else {
                     detailsImages[x].src = "";
                     detailsImages[x].alt = "";
+                    detailsImages[x].style.display = "none";
                     detailsImages[x].setAttribute("class", "img-responsive");
                     detailsImages[x].setAttribute("class", "question_image");
                 }
@@ -202,7 +206,7 @@
         allQuestionDetails['options'] = allOptions;
         allQuestionDetails['questionTags'] = tags;
         allQuestionDetails['questionExplanation'] = answerExplanation;
-        pefinite.ajax("http://localhost/sawaal_piracy/post_all_question.php", JSON.stringify(allQuestionDetails)).syncPost();
+        pefinite.ajax("http://localhost/p_sawaal/post_all_question.php", JSON.stringify(allQuestionDetails)).syncPost();
     }
 
 

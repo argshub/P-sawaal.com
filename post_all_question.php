@@ -1,7 +1,7 @@
 <?php
 
 $data = json_decode(file_get_contents("php://input"), true);
-$mysql = new mysqli("localhost", "root", "", "pefinite");
+$mysql = new mysqli("localhost", "root", "", "sawaal");
 
 $questionLabel = $mysql->real_escape_string($data['questionLabel']);
 $questionTitle = $mysql->real_escape_string($data['questionTitle']);
