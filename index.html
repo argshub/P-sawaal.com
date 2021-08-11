@@ -51,7 +51,7 @@
 
     function readAllPagesOfADirectory(page) {
         let nextUrl = "";
-        pefinite.ajax("http://localhost/p_sawaal/read_url_data.php", page).syncPost(function (data){
+        pefinite.ajax("http://localhost/P-sawaal.com/read_url_data.php", page).syncPost(function (data){
             data = (new DOMParser()).parseFromString(data, "text/html");
 
             // cast all post
@@ -98,7 +98,7 @@
 
         let questionImages = questionName.getElementsByTagName("img");
         for(let x= 0; x < questionImages.length; x++) {
-            pefinite.ajax("http://localhost/p_sawaal/read_image_from_url.php", questionImages[x].src).syncPost(function (imageData){
+            pefinite.ajax("http://localhost/P-sawaal.com/read_image_from_url.php", questionImages[x].src).syncPost(function (imageData){
                 imageData = JSON.parse(imageData);
                 if(imageData['data'].length) {
                     questionImages[x].src = "data:image/" + imageData['type'] + ";base64, " + imageData['data'];
@@ -163,7 +163,7 @@
 
         let detailsImages = answerExplanation.getElementsByTagName("img");
         for(let x= 0; x < detailsImages.length; x++) {
-            pefinite.ajax("http://localhost/p_sawaal/read_image_from_url.php", detailsImages[x].src).syncPost(function (imageData){
+            pefinite.ajax("http://localhost/P-sawaal.com/read_image_from_url.php", detailsImages[x].src).syncPost(function (imageData){
                 imageData = JSON.parse(imageData);
                 if(imageData['data'].length) {
                     detailsImages[x].src = "data:image/" + imageData['type'] + ";base64, " + imageData['data'];
@@ -206,7 +206,7 @@
         allQuestionDetails['options'] = allOptions;
         allQuestionDetails['questionTags'] = tags;
         allQuestionDetails['questionExplanation'] = answerExplanation;
-        pefinite.ajax("http://localhost/p_sawaal/post_all_question.php", JSON.stringify(allQuestionDetails)).syncPost();
+        pefinite.ajax("http://localhost/P-sawaal.com/post_all_question.php", JSON.stringify(allQuestionDetails)).syncPost();
     }
 
 

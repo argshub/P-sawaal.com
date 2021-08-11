@@ -1,8 +1,15 @@
 <?php
 
-$data = json_decode(file_get_contents("php://input"), true);
-$mysql = new mysqli("localhost", "root", "", "sawaal");
 
+$mysql = new mysqli("127.0.0.1", "root", "", "mysql");
+$mysql->query("create database if not exists sawaal character set utf8 collate utf8_general_ci");
+$mysql = new mysqli("127.0.0.1", "root", "", "sawaal");
+$mysql->query("create table if not exists sawaal_questions (id int auto_increment primary key, questionLabel text unique, questionTitle longtext,questionTags text,questionExplanation longtext )");
+$mysql->query("create table if not exists sawaal_questions_answers (id int auto_increment primary key, questionId int, answer longtext,isCorrect int default 0)");
+
+
+
+$data = json_decode(file_get_contents("php://input"), true);
 $questionLabel = $mysql->real_escape_string($data['questionLabel']);
 $questionTitle = $mysql->real_escape_string($data['questionTitle']);
 $questionTags = $mysql->real_escape_string($data['questionTags']);
