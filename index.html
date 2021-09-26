@@ -88,8 +88,18 @@
 
         // casting label
         let questionLabel = "";
-        questionLabel += btoa(unescape(encodeURIComponent(questionName.innerHTML.toString().trim())));
+        questionLabel += questionName.innerHTML.toString().trim();
 
+        // question uri
+
+        let questionUri = "";
+
+        let allNodes = questionName.childNodes;
+        for (let x = 0; x < allNodes.length; x++) {
+            questionUri += " " + allNodes[x].textContent + " ";
+        }
+
+        questionUri = questionUri.replace(/[^a-zA-Z0-9 ]/g, " ").replace(/\s\s+/g, " ").trim().replaceAll(" ", "-").toLowerCase();
 
         let questionImages = questionName.getElementsByTagName("img");
         for(let x= 0; x < questionImages.length; x++) {
@@ -109,7 +119,6 @@
             });
         }
 
-        questionName = questionName.innerHTML.toString().trim();
 
         // question tag
         let tags = post.getElementsByClassName("question_and_options_space5")[1];
@@ -125,9 +134,7 @@
                }
            }
         }
-
-        tags = allTagName.toString();
-
+        questionLabel += allTagName.toString();
         // question answers
 
         let allOptions = [];
@@ -143,6 +150,8 @@
             }
         }
 
+        questionLabel += allOptions.toString();
+        questionLabel = btoa(unescape(encodeURIComponent(questionLabel)));
         // extract answer and explanation
 
         let answerExplanation = post.getElementsByClassName("ansDivBox");
@@ -197,11 +206,14 @@
 
         let allQuestionDetails =  {};
         allQuestionDetails['questionLabel'] = questionLabel;
-        allQuestionDetails['questionTitle'] = questionName;
+        allQuestionDetails['questionTitle'] = questionName.innerHTML.toString().trim();
         allQuestionDetails['options'] = allOptions;
-        allQuestionDetails['questionTags'] = tags;
+        allQuestionDetails['questionTags'] = allTagName.toString();
+        allQuestionDetails['questionUri'] = questionUri;
         allQuestionDetails['questionExplanation'] = answerExplanation;
-        pefinite.ajax("http://localhost/P-sawaal.com/post_all_question.php", JSON.stringify(allQuestionDetails)).syncPost();
+        pefinite.ajax("http://localhost/P-sawaal.com/post_all_question.php", JSON.stringify(allQuestionDetails)).syncPost(function (data){
+            console.log(data);
+        });
     }
 
 
