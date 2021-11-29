@@ -150,8 +150,7 @@
             }
         }
 
-        questionLabel += allOptions.toString();
-        questionLabel = btoa(unescape(encodeURIComponent(questionLabel)));
+
         // extract answer and explanation
 
         let answerExplanation = post.getElementsByClassName("ansDivBox");
@@ -163,25 +162,7 @@
             }
         }
 
-        // extracting answer
 
-        let detailsImages = answerExplanation.getElementsByTagName("img");
-        for(let x= 0; x < detailsImages.length; x++) {
-            pefinite.ajax("http://localhost/P-sawaal.com/read_image_from_url.php", detailsImages[x].src).syncPost(function (imageData){
-                imageData = JSON.parse(imageData);
-                if(imageData['data'].length) {
-                    detailsImages[x].src = "data:image/" + imageData['type'] + ";base64, " + imageData['data'];
-                    detailsImages[x].setAttribute("class", "img-responsive");
-                    detailsImages[x].setAttribute("class", "question_image");
-                } else {
-                    detailsImages[x].src = "";
-                    detailsImages[x].alt = "";
-                    detailsImages[x].style.display = "none";
-                    detailsImages[x].setAttribute("class", "img-responsive");
-                    detailsImages[x].setAttribute("class", "question_image");
-                }
-            });
-        }
 
         if(allOptions.length) {
             if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
@@ -200,6 +181,28 @@
             if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
             if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
             if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
+        }
+        // add options to label
+        questionLabel += allOptions.toString();
+        questionLabel += answerExplanation.innerHTML.toString().trim();
+        questionLabel = btoa(unescape(encodeURIComponent(questionLabel)));
+
+        let detailsImages = answerExplanation.getElementsByTagName("img");
+        for(let x= 0; x < detailsImages.length; x++) {
+            pefinite.ajax("http://localhost/P-sawaal.com/read_image_from_url.php", detailsImages[x].src).syncPost(function (imageData){
+                imageData = JSON.parse(imageData);
+                if(imageData['data'].length) {
+                    detailsImages[x].src = "data:image/" + imageData['type'] + ";base64, " + imageData['data'];
+                    detailsImages[x].setAttribute("class", "img-responsive");
+                    detailsImages[x].setAttribute("class", "question_image");
+                } else {
+                    detailsImages[x].src = "";
+                    detailsImages[x].alt = "";
+                    detailsImages[x].style.display = "none";
+                    detailsImages[x].setAttribute("class", "img-responsive");
+                    detailsImages[x].setAttribute("class", "question_image");
+                }
+            });
         }
         answerExplanation = answerExplanation.innerHTML.toString().trim();
 
