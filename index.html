@@ -134,7 +134,6 @@
                }
            }
         }
-        questionLabel += allTagName.toString();
         // question answers
 
         let allOptions = [];
@@ -186,7 +185,6 @@
         questionLabel += allOptions.toString();
         questionLabel += answerExplanation.innerHTML.toString().trim();
         questionLabel = btoa(unescape(encodeURIComponent(questionLabel)));
-
         let detailsImages = answerExplanation.getElementsByTagName("img");
         for(let x= 0; x < detailsImages.length; x++) {
             pefinite.ajax("http://localhost/Piracy-sawaal.com/read_image_from_url.php", detailsImages[x].src).syncPost(function (imageData){
