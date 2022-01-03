@@ -134,6 +134,7 @@
                }
            }
         }
+
         // question answers
 
         let allOptions = [];
@@ -182,6 +183,7 @@
             if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
         }
         // add options to label
+        questionLabel += allTagName.toString();
         questionLabel += allOptions.toString();
         questionLabel += answerExplanation.innerHTML.toString().trim();
         questionLabel = btoa(unescape(encodeURIComponent(questionLabel)));
