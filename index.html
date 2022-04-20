@@ -99,7 +99,7 @@
             questionUri += " " + allNodes[x].textContent + " ";
         }
 
-        questionUri = questionUri.replace(/[^a-zA-Z0-9 ]/g, " ").replace(/\s\s+/g, " ").trim().replaceAll(" ", "-").toLowerCase();
+        questionUri = questionUri.replace(/[^a-zA-Z0-9 ]/g, " ").replace(/\s\s+/g, " ").trim().replaceAll(" ", "-").toLowerCase().substring(0, 2000);
 
         let questionImages = questionName.getElementsByTagName("img");
         for(let x= 0; x < questionImages.length; x++) {
@@ -183,10 +183,10 @@
             if(answerExplanation.firstChild) answerExplanation.removeChild(answerExplanation.firstChild);
         }
         // add options to label
-        questionLabel += allTagName.toString();
         questionLabel += allOptions.toString();
+        questionLabel += allTagName.toString();
         questionLabel += answerExplanation.innerHTML.toString().trim();
-        questionLabel = btoa(unescape(encodeURIComponent(questionLabel)));
+        questionLabel = btoa(unescape(encodeURIComponent(questionLabel))).substring(0, 65500);
         let detailsImages = answerExplanation.getElementsByTagName("img");
         for(let x= 0; x < detailsImages.length; x++) {
             pefinite.ajax("http://localhost/Piracy-sawaal.com/read_image_from_url.php", detailsImages[x].src).syncPost(function (imageData){
