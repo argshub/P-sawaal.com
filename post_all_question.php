@@ -38,10 +38,11 @@ if($questionId) {
                 break;
         }
         for($x = 0; $x < (count($questionOptions) - 1); $x++) {
+            $answerToSubmit = $mysql->real_escape_string($questionOptions[$x]);
             if($correctAnswer == $x) {
-                $mysql->query("insert into sawaal_questions_answers (questionId, answer, isCorrect) value ({$questionId}, '{$questionOptions[$x]}', 1)");
+                $mysql->query("insert into sawaal_questions_answers (questionId, answer, isCorrect) value ({$questionId}, '{$answerToSubmit}', 1)");
             } else {
-                $mysql->query("insert into sawaal_questions_answers (questionId, answer) value ({$questionId}, '{$questionOptions[$x]}')");
+                $mysql->query("insert into sawaal_questions_answers (questionId, answer) value ({$questionId}, '{$answerToSubmit}')");
             }
         }
     }
