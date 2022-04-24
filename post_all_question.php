@@ -23,21 +23,7 @@ if(!$mysql->query("select id from sawaal_questions where questionLabel = '{$ques
     $questionId = $mysql->insert_id;
     if($questionId) {
         if(count($questionOptions)) {
-            $correctAnswer = strtolower($questionOptions[count($questionOptions) - 1]);
-            switch ($correctAnswer) {
-                case 'a':
-                    $correctAnswer = 0;
-                    break;
-                case 'b':
-                    $correctAnswer = 1;
-                    break;
-                case 'c':
-                    $correctAnswer = 2;
-                    break;
-                case 'd':
-                    $correctAnswer = 3;
-                    break;
-            }
+            $correctAnswer = mb_ord(strtolower($questionOptions[count($questionOptions) - 1])) - 97;
             for($x = 0; $x < (count($questionOptions) - 1); $x++) {
                 $answerToSubmit = $mysql->real_escape_string($questionOptions[$x]);
                 if($correctAnswer == $x) {
@@ -48,9 +34,9 @@ if(!$mysql->query("select id from sawaal_questions where questionLabel = '{$ques
             }
         }
     }
-    print_r($questionId);
+    //print_r($questionId);
 } else {
-    print_r(0);
+    //print_r(0);
 }
 
 
