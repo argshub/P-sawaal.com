@@ -1,6 +1,5 @@
 <?php
 
-
 $mysql = new mysqli("127.0.0.1", "root", "", "mysql");
 $mysql->query("create database if not exists sawaal character set utf8 collate utf8_general_ci");
 $mysql = new mysqli("127.0.0.1", "root", "", "sawaal");
@@ -34,9 +33,9 @@ if(!$mysql->query("select id from sawaal_questions where questionLabel = '{$ques
             }
         }
     }
-    //print_r($questionId);
+    print_r($questionId);
 } else {
-    //print_r(0);
+    print_r(0);
 }
 
 
