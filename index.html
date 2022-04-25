@@ -141,9 +141,9 @@
 
         let questionOptions = post.getElementsByClassName("multiple_ch_que_layout");
         if(questionOptions.length) {
-            questionOptions = questionOptions[0].textContent.split("\n");
+            questionOptions = questionOptions[0].getElementsByTagName("td");
             for(let x = 0; x < questionOptions.length; x++) {
-                let findingEachAnswer = questionOptions[x].trim();
+                let findingEachAnswer = questionOptions[x].textContent.trim();
                 if(findingEachAnswer.length) {
                     allOptions.push(findingEachAnswer.substring(2).trim());
                 }
